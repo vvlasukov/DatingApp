@@ -58,7 +58,6 @@ namespace DatingApp.API.Data
                 passworSalt = hmac.Key;
                 passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
             }
-
         }
 
         public async Task<bool> UserExists(string username)
