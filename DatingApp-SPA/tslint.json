@@ -1,7 +1,6 @@
 {
   "extends": "tslint:recommended",
   "rules": {
-    "no-string-literal": false,
     "array-type": false,
     "arrow-parens": false,
     "deprecation": {
@@ -69,7 +68,10 @@
     "object-literal-sort-keys": false,
     "ordered-imports": false,
     "quotemark": [
-      false
+      true,
+      "single",
+      "avoid-escape",
+      "avoid-template"
     ],
     "trailing-comma": false,
     "no-conflicting-lifecycle": true,

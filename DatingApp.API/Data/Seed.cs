@@ -12,15 +12,21 @@ namespace DatingApp.API.Data
             if (!context.Users.Any())
             {
                 var userData = System.IO.File.ReadAllText("Data/UserSeedData.json");
+
                 var users = JsonConvert.DeserializeObject<List<User>>(userData);
+
                 foreach (var user in users)
                 {
                     byte[] passwordHash, passwordSalt;
+
                     CreatePasswordHash("password", out passwordHash, out passwordSalt);
 
                     user.PasswordHash = passwordHash;
+
                     user.PassworSalt = passwordSalt;
+
                     user.Username = user.Username.ToLower();
+
                     context.Users.Add(user);
                 }
 
@@ -33,6 +39,7 @@ namespace DatingApp.API.Data
             using (var hmac = new System.Security.Cryptography.HMACSHA512())
             {
                 passwordSalt = hmac.Key;
+
                 passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
             }
         }

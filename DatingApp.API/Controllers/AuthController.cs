@@ -18,7 +18,9 @@ namespace DatingApp.API.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IAuthRepository _repo;
+
         private readonly IConfiguration _config;
+
         private readonly IMapper _mapper;
 
         public AuthController(IAuthRepository repo, IConfiguration config, IMapper mapper)
@@ -33,8 +35,11 @@ namespace DatingApp.API.Controllers
         public async Task<IActionResult> Register(UserForRegisterDTO userForRegisterDTO)
         {
             userForRegisterDTO.Username = userForRegisterDTO.Username.ToLower();
+
             if (await _repo.UserExists(userForRegisterDTO.Username))
+            {
                 return BadRequest("Username already exists");
+            }
 
             var userToCreate = _mapper.Map<User>(userForRegisterDTO);
 
@@ -42,7 +47,14 @@ namespace DatingApp.API.Controllers
 
             var userToReturn = _mapper.Map<UserForDetailedDTO>(createdUser);
 
-            return CreatedAtRoute("GetUser", new { controller = "Users", id = createdUser.ID }, userToReturn);
+            return CreatedAtRoute(
+                "GetUser",
+                new
+                {
+                    controller = "Users",
+                    id = createdUser.ID
+                },
+                userToReturn);
         }
 
 
@@ -52,9 +64,11 @@ namespace DatingApp.API.Controllers
             var userFromRepo = await _repo.Login(userForLoginDTO.Username.ToLower(), userForLoginDTO.Password);
 
             if (userFromRepo == null)
+            {
                 return Unauthorized();
+            }
 
-            var claims = new[]{
+            var claims = new[] {
                 new Claim(ClaimTypes.NameIdentifier, userFromRepo.ID.ToString()),
                 new Claim(ClaimTypes.Name, userFromRepo.Username)
             };
@@ -76,15 +90,11 @@ namespace DatingApp.API.Controllers
 
             var user = _mapper.Map<UserForListDTO>(userFromRepo);
 
-
-
             return Ok(new
             {
                 token = tokenHandler.WriteToken(token),
                 user
             });
         }
-
-
     }
 }
